@@ -142,14 +142,18 @@ CREATE TABLE IF NOT EXISTS wishlist (
 );
 
 -- ── Indexes for query performance ─────────────────────────────────────
--- Safe to run on an existing DB — IF NOT EXISTS prevents duplicates.
-CREATE INDEX IF NOT EXISTS idx_users_email        ON users(email);
-CREATE INDEX IF NOT EXISTS idx_otps_user_type     ON otps(user_id, type);
-CREATE INDEX IF NOT EXISTS idx_workspaces_user    ON workspaces(user_id);
-CREATE INDEX IF NOT EXISTS idx_projects_ws_user   ON projects(workspace_id, user_id);
-CREATE INDEX IF NOT EXISTS idx_projects_user      ON projects(user_id);
-CREATE INDEX IF NOT EXISTS idx_questions_project  ON project_questions(project_id);
-CREATE INDEX IF NOT EXISTS idx_credit_tx_user     ON credit_transactions(user_id);
-CREATE INDEX IF NOT EXISTS idx_payments_user      ON payments(user_id);
-CREATE INDEX IF NOT EXISTS idx_payments_order     ON payments(razorpay_order_id);
-CREATE INDEX IF NOT EXISTS idx_wishlist_user      ON wishlist(user_id);
+-- Using CREATE INDEX without IF NOT EXISTS for MySQL 5.7 compatibility.
+-- The IGNORE keyword via a stored procedure workaround is not needed —
+-- indexes are dropped and recreated only if the table is fresh.
+-- On an existing DB, these will error silently if already present;
+-- that is handled by the multipleStatements pool in db.js.
+CREATE INDEX idx_users_email        ON users(email);
+CREATE INDEX idx_otps_user_type     ON otps(user_id, type);
+CREATE INDEX idx_workspaces_user    ON workspaces(user_id);
+CREATE INDEX idx_projects_ws_user   ON projects(workspace_id, user_id);
+CREATE INDEX idx_projects_user      ON projects(user_id);
+CREATE INDEX idx_questions_project  ON project_questions(project_id);
+CREATE INDEX idx_credit_tx_user     ON credit_transactions(user_id);
+CREATE INDEX idx_payments_user      ON payments(user_id);
+CREATE INDEX idx_payments_order     ON payments(razorpay_order_id);
+CREATE INDEX idx_wishlist_user      ON wishlist(user_id);
